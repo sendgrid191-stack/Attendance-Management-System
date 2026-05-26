@@ -1,0 +1,10 @@
+{
+  "name": "Attendance Management System",
+  "description": "A modern, secure Attendance Management System built around high-speed facial recognition - learn, innovate, explore.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
