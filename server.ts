@@ -596,13 +596,27 @@ app.post("/api/attendance/scan", async (req, res) => {
         res.status(404).json({ error: `Employee matching ID ${targetId} is not found.` });
         return;
       }
+      if (matchEmp.status !== "Active") {
+        res.status(400).json({ 
+          error: "Inactive profile", 
+          message: `Employee '${matchEmp.name}' status is currently inactive.` 
+        });
+        return;
+      }
+      if (!matchEmp.faceData || matchEmp.faceData.length < 50) {
+        res.status(400).json({ 
+          error: "Biometric face registration required", 
+          message: `The employee '${matchEmp.name}' has not registered a biometric face scan template. Please enroll their face in the Admin portal first.` 
+        });
+        return;
+      }
       candidates = [matchEmp];
     } else {
       // General lookup: find all Active employees who have registered faceData
       candidates = db.employees.filter(e => e.status === "Active" && e.faceData);
     }
 
-    const activeCandidates = candidates.filter(e => e.status === "Active");
+    const activeCandidates = candidates.filter(e => e.status === "Active" && e.faceData);
 
     if (activeCandidates.length === 0) {
       res.status(400).json({
