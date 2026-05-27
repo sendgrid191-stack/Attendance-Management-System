@@ -212,7 +212,7 @@ ${candidatesListText}
 
 Biometric Matching Guidelines:
 1. Focus strictly on static facial bone structures, eye distance, spacing, bridge of the nose, jaw contours, and mouth shape.
-2. COMPLETELY IGNORE surface-level differences like expression variations (smiling, frowning), facial hair changes, pose shifts, lighting angles, shadows, glasses, hairstyles, or makeup.
+2. COMPLETELY IGNORE surface-level differences like expression variations (smiling, frowning), clothing, garments, activewear, collars, background elements, hairstyles, facial hair changes, pose shifts, lighting angles, shadows, glasses, or makeup. The matching must rely purely and strictly on face features and biometric structures.
 3. If the facial details are an exact or highly consistent structural match, set matched = true and output the corresponding employeeId.
 4. If there is no registered face matching (different person), set matched = false and employeeId = null.
 5. Perform strict liveness detection (isSpoof):

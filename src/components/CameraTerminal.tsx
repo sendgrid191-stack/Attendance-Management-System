@@ -96,25 +96,27 @@ export default function CameraTerminal({ onScanSuccess, onScanError }: CameraTer
         throw new Error("Canvas 2D context creation failed");
       }
 
-      // Draw cropped square frame
+      // Draw cropped square frame focusing tightly on the centered face region
       const minDim = Math.min(videoRef.current.videoWidth, videoRef.current.videoHeight);
-      const sx = (videoRef.current.videoWidth - minDim) / 2;
-      const sy = (videoRef.current.videoHeight - minDim) / 2;
+      const faceCropSize = minDim * 0.55; // focus tightly on face density (55% of video boundary)
+      const sx = (videoRef.current.videoWidth - faceCropSize) / 2;
+      // Vertically elevate crop by 8% to capture face/forehead and completely discard shoulders/chest clothes
+      const sy = Math.max(0, (videoRef.current.videoHeight - faceCropSize) / 2 - (minDim * 0.08));
       
       ctx.drawImage(
         videoRef.current,
-        sx, sy, minDim, minDim, // Source crop
+        sx, sy, faceCropSize, faceCropSize, // Source crop centered on the face
         0, 0, 240, 240 // Destination scale
       );
 
-      // Extract 16x16 grayscale biometric signature for lightning-fast server pre-filtering & fallback
+      // Extract 16x16 grayscale biometric signature from the same precise face boundary
       const featureCanvas = document.createElement("canvas");
       featureCanvas.width = 16;
       featureCanvas.height = 16;
       const featureCtx = featureCanvas.getContext("2d");
       let featureHex = "";
       if (featureCtx) {
-        featureCtx.drawImage(videoRef.current, sx, sy, minDim, minDim, 0, 0, 16, 16);
+        featureCtx.drawImage(videoRef.current, sx, sy, faceCropSize, faceCropSize, 0, 0, 16, 16);
         const imgData = featureCtx.getImageData(0, 0, 16, 16);
         const pixels = imgData.data;
         const grayList = [];
